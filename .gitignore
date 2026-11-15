@@ -1,0 +1,11 @@
+# Python
+backend/.venv/
+__pycache__/
+*.pyc
+.pytest_cache/
+backend/.env
+# Datos locales (base SQLite y PDF subidos)
+backend/data/
+# Node
+frontend/node_modules/
+frontend/dist/

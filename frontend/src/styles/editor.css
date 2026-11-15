@@ -1,0 +1,91 @@
+/* ==========================================================================
+   Editor del mapa conceptual
+   ========================================================================== */
+.editor { display: grid; grid-template-columns: 1fr 360px; height: 100%; min-height: 0; }
+.canvas { position: relative; min-width: 0; min-height: 0; background: var(--white); }
+.canvas > .react-flow { position: absolute; inset: 0; width: auto; height: auto; background: var(--white); }
+.panel { border-left: 1px solid var(--navy-12); background: var(--white); overflow-y: auto; min-height: 0; }
+.panel__body { padding: 20px; display: flex; flex-direction: column; gap: 14px; }
+.panel__kind { font-size: 13px; font-weight: 650; color: var(--navy); border-bottom: 2px solid var(--red); padding-bottom: 4px; align-self: flex-start; }
+.panel__actions { display: flex; flex-direction: column; gap: 8px; }
+.panel__tip { font-size: 12.5px; color: var(--navy-70); }
+.tips { list-style: disc; padding-left: 18px; display: flex; flex-direction: column; gap: 4px; font-size: 14px; color: var(--navy-70); }
+.source blockquote {
+  margin-top: 6px; padding: 10px 12px; background: var(--navy-03); border-left: 3px solid var(--navy-40);
+  border-radius: 0 var(--radius-sm) var(--radius-sm) 0; font-size: 13.5px; line-height: 1.5; max-height: 220px; overflow-y: auto;
+}
+.warnings ul, .links ul { margin-top: 6px; display: flex; flex-direction: column; gap: 6px; font-size: 13.5px; }
+.warnings li { padding-left: 12px; border-left: 3px solid var(--red-16); color: var(--navy-70); }
+.linkbtn { background: none; border: 0; padding: 0; text-align: left; cursor: pointer; color: var(--navy); text-decoration: underline; text-decoration-color: var(--navy-40); text-underline-offset: 3px; font-size: 13.5px; }
+.linkbtn:hover { text-decoration-color: var(--red); color: var(--red); }
+.edge-path { font-size: 14px; line-height: 1.6; }
+
+/* barra de herramientas y estado sobre el lienzo */
+.toolbar {
+  position: absolute; z-index: 5; top: 14px; left: 14px; display: flex; flex-wrap: wrap; gap: 4px; align-items: center;
+  background: var(--white); border: 1px solid var(--navy-20); border-radius: var(--radius); padding: 4px;
+}
+.tool { display: inline-flex; align-items: center; gap: 6px; padding: 6px 10px; border: 0; border-radius: var(--radius-sm); background: none; cursor: pointer; font-size: 13.5px; font-weight: 500; }
+.tool:hover { background: var(--navy-06); }
+.toolbar__sep { width: 1px; align-self: stretch; background: var(--navy-12); margin: 2px 4px; }
+.status { position: absolute; z-index: 5; top: 14px; right: 14px; max-width: 46%; }
+.status__msg { display: inline-block; background: var(--white); border: 1px solid var(--navy-20); border-radius: var(--radius); padding: 6px 12px; font-size: 13px; }
+.status__msg--error { border-color: var(--red); color: var(--red); background: var(--red-08); }
+.status__msg--ok { border-color: var(--navy-40); }
+.legend {
+  position: absolute; z-index: 5; left: 14px; bottom: 14px; display: flex; flex-wrap: wrap; gap: 4px 14px; max-width: calc(100% - 140px);
+  background: var(--white); border: 1px solid var(--navy-12); border-radius: var(--radius); padding: 7px 12px; font-size: 12px; color: var(--navy-70);
+}
+.legend li { display: flex; align-items: center; gap: 6px; }
+.lg { display: inline-block; width: 16px; height: 11px; border-radius: 3px; }
+.lg--root { background: var(--navy); }
+.lg--section { border: 1.5px solid var(--navy); background: var(--white); }
+.lg--concept { border: 1px solid var(--navy-40); background: var(--navy-06); }
+.lg--flag { border: 1.5px dashed var(--red); background: var(--white); }
+.lg--edge { height: 0; border-top: 2px solid var(--navy); border-radius: 0; }
+.lg--edge-dash { height: 0; border-top: 2px dashed var(--navy-70); border-radius: 0; }
+
+/* nodos */
+.cnode {
+  position: relative; width: 240px; min-height: 56px; padding: 10px 14px; display: flex; flex-direction: column; justify-content: center;
+  border-radius: 10px; background: var(--white); border: 1.5px solid var(--navy); color: var(--navy); cursor: pointer; text-align: left;
+}
+.cnode__label { font-size: 13.5px; line-height: 1.35; font-weight: 600; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; overflow-wrap: anywhere; }
+.cnode--root { background: var(--navy); color: var(--white); border-color: var(--navy); }
+.cnode--root .cnode__label { font-size: 15px; }
+.cnode--definition, .cnode--list_item, .cnode--keyword, .cnode--manual { background: var(--navy-06); border: 1px solid var(--navy-40); }
+.cnode--definition .cnode__label, .cnode--list_item .cnode__label, .cnode--keyword .cnode__label, .cnode--manual .cnode__label { font-weight: 500; }
+.cnode--manual { border-style: dotted; border-width: 1.5px; }
+.cnode.is-provisional { border: 1.5px dashed var(--red); background: var(--white); }
+.cnode.is-selected { border: 2px solid var(--red); background: var(--red-08); box-shadow: 0 0 0 3px var(--red-16); }
+.cnode--root.is-selected { background: var(--navy); box-shadow: 0 0 0 3px var(--red); border-color: var(--red); }
+.cnode__flag { position: absolute; top: -9px; left: 12px; background: var(--red); color: var(--white); font-size: 11px; font-weight: 650; padding: 1px 7px; border-radius: 99px; }
+.cnode__toggle {
+  position: absolute; right: -14px; top: 50%; transform: translateY(-50%); z-index: 2; min-width: 26px; height: 26px; padding: 0 6px;
+  border-radius: 99px; border: 1.5px solid var(--navy); background: var(--white); color: var(--navy); font-size: 12px; font-weight: 650; cursor: pointer;
+}
+.cnode__toggle:hover { background: var(--navy); color: var(--white); }
+.react-flow__handle { width: 9px; height: 9px; background: var(--white); border: 1.5px solid var(--navy); }
+.react-flow__handle:hover { background: var(--red); border-color: var(--red); }
+.react-flow__handle-right { right: -5px; }
+.react-flow__handle-left { left: -5px; }
+
+/* aristas */
+.react-flow__edge-path { stroke-width: 1.5; }
+.react-flow__edge.edge-hierarchy .react-flow__edge-path { stroke: rgba(3, 33, 90, 0.5); }
+.react-flow__edge.edge-explicit .react-flow__edge-path { stroke: var(--navy); stroke-width: 2; }
+.react-flow__edge.edge-cross .react-flow__edge-path { stroke: rgba(3, 33, 90, 0.6); }
+.react-flow__edge.edge-manual .react-flow__edge-path { stroke: var(--red); stroke-width: 2; }
+.react-flow__edge.edge-provisional .react-flow__edge-path, .react-flow__edge.edge-cross .react-flow__edge-path { stroke-dasharray: 6 4; }
+.react-flow__edge.edge-selected .react-flow__edge-path { stroke: var(--red); stroke-width: 2.5; }
+.react-flow__edge { cursor: pointer; }
+.react-flow__attribution { background: var(--white-80); }
+
+/* adaptación: el panel pasa debajo del mapa */
+@media (max-width: 960px) {
+  .work--flush { overflow-y: auto; }
+  .editor { grid-template-columns: 1fr; grid-template-rows: minmax(420px, 62vh) auto; height: auto; }
+  .panel { border-left: 0; border-top: 1px solid var(--navy-12); }
+  .legend { display: none; }
+  .status { top: auto; bottom: 14px; right: 14px; max-width: 70%; }
+}

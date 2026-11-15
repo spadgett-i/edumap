@@ -1,0 +1,12 @@
+# Servidor web
+fastapi>=0.115
+uvicorn[standard]>=0.30
+python-multipart>=0.0.9     # necesario para recibir archivos (multipart/form-data)
+
+# Procesamiento documental (todo local, sin servicios externos)
+pymupdf>=1.24               # extracción de texto con tamaño/negrita de fuente
+pytesseract>=0.3.10         # envoltorio de Tesseract OCR (el binario se instala aparte)
+pillow>=10.0                # imagen intermedia para el OCR
+
+# Validación de datos
+pydantic>=2.6
